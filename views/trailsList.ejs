@@ -1,0 +1,13 @@
+<%- include ("partials/header") %>
+
+HI PEEPS LETS SEE THE TRAILS!
+
+<% trails.forEach(function(trail){ %>
+    <div>
+        <h4><%= trail.name %></h4>
+        <img src="<%= trail.image %>">
+    </div>
+<% }); %>
+
+
+<%- include ("partials/footer") %>

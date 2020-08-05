@@ -13,23 +13,42 @@ app.get("/results", function(req, res){
            var results = JSON.parse(body)
            res.send(results);
        }
-   })
-})
-
-app.get("/:name", function(req, res){
-    var name = req.params.name;
-    res.render('home', {name: name});
+   });
 });
 
+app.get("/", function(req, res){
+    res.render('home');
+});
 
-app.post("/addItem", function(req, res){
-    res.send("You have reached the post route!")
-})
+ var trails = [
+        {name: "Acadia National Park", image: "https://www.nps.gov/common/uploads/grid_builder/acad/crop16_9/E6B230A1-DC14-F36A-8E22547BB4C2AA27.jpg?width=950&quality=90&mode=crop"},
+        {name: "Ala Kahakai National Historic Trail", image: "https://www.nps.gov/common/uploads/grid_builder/alka/crop16_9/25DE833E-1DD8-B71B-0BC6992DDE05DCDD.jpg?width=950&quality=90&mode=crop"},
+        {name: "Appalachian National Scenic Trail", image: "https://www.nps.gov/common/uploads/grid_builder/appa/crop16_9/7439728A-1DD8-B71B-0B90C9CA77A75C7E.jpg?width=950&quality=90&mode=crop"},
+        {name: "Arches National Park", image: "https://www.nps.gov/common/uploads/grid_builder/arch/crop16_9/0E80496C-1DD8-B71B-0B8B48F7F4529F52.jpg?width=465&quality=90&mode=crop/"}];
+app.get("/trails", function(req, res){
+       
+    res.render('trailsList', {trails:trails});
+});
+
+app.post("/trails", function(req, res){
+    var name = req.body.trailName;
+    var image = req.body.trailImage;
+    var newTrail = {name: name, image: image}
+    trails.push(newTrail);
+    
+    res.redirect("/trails");
+    
+});
+
+//form to add a new trail
+app.get("/trails/new", function(req, res){
+    res.render("new.ejs");
+});
 
 app.get("*", function(req, res){
     res.send('404 file not found');
 });
 
 app.listen(process.env.PORT, process.env.IP, function(){
-    console.log("server has started");
+    console.log("Trailfinder server has started");
 });

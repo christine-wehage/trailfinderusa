@@ -1,12 +1,10 @@
 <%- include ("partials/header") %>
 
-<h1>Welcome to the Home page!</h1>
+<h1>Welcome to the Trails Home page!</h1>
 <img src="https://images.unsplash.com/photo-1593642634524-b40b5baae6bb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80">
-<h2>Hi there <%=name%> lets be friends!</h2>
+<h2>Hi there? lets be friends!</h2>
 
-<% if(name.toLowerCase() === "christine"){ %>
-<p>Welcome Tine, missed u.</p>
-<% } %>
+<a href="/trailList">View the Trail List</a>
 
 <form action="/addItem" method="POST">
     <input type="text" name="itemName" placeholder="item">

@@ -1,0 +1,11 @@
+<%- include ("partials/header") %>
+
+<h1>Add a New Trail!</h1>
+
+<form action="/trails" method="POST">
+    <input type="text" name="trailName" placeholder="name">
+    <input type="text" name="trailImage" placeholder="image URL">
+    <button>Submit</button>
+</form>
+
+<%- include ("partials/footer") %>
