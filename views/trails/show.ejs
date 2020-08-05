@@ -1,0 +1,22 @@
+<%- include ("../partials/header") %>
+
+<a href="/trails">Go Back</a>
+<h1>this is the show trail page</h1>
+
+<p ><%= trail.name %> </p>
+<img src="<%= trail.image %>">
+
+<a href="/trails/<%= trail._id %>/edit"><button class="ui orange basic button">Edit</button></a>
+<form class="ui fluid form" action="/trails/<%= trail._id %>?_method=DELETE" method="POST">
+    <button class="ui red basic button">DELETE</button>
+</form>
+
+<% trail.comments.forEach(function(comment){ %>
+    <p>
+        <strong><%= comment.author %></strong> - <%= comment.text %>
+    </p>
+<% }) %>
+
+<a href="/trails/<%= trail._id %>/comments/new">Add comment</a>
+
+<%- include ("../partials/footer") %>
