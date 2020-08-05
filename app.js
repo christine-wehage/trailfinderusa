@@ -1,7 +1,20 @@
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
-var request = require("request")
+
+// open db
+var mongoose = require("mongoose");
+    mongoose.connect("mongodb://localhost/trails");
+    
+// define schema
+var trailSchema = new mongoose.Schema({
+    name: String,
+    image: String
+});
+
+var Trail = mongoose.model("Trail", trailSchema);
+
+var request = require("request");
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
@@ -20,24 +33,31 @@ app.get("/", function(req, res){
     res.render('home');
 });
 
- var trails = [
-        {name: "Acadia National Park", image: "https://www.nps.gov/common/uploads/grid_builder/acad/crop16_9/E6B230A1-DC14-F36A-8E22547BB4C2AA27.jpg?width=950&quality=90&mode=crop"},
-        {name: "Ala Kahakai National Historic Trail", image: "https://www.nps.gov/common/uploads/grid_builder/alka/crop16_9/25DE833E-1DD8-B71B-0BC6992DDE05DCDD.jpg?width=950&quality=90&mode=crop"},
-        {name: "Appalachian National Scenic Trail", image: "https://www.nps.gov/common/uploads/grid_builder/appa/crop16_9/7439728A-1DD8-B71B-0B90C9CA77A75C7E.jpg?width=950&quality=90&mode=crop"},
-        {name: "Arches National Park", image: "https://www.nps.gov/common/uploads/grid_builder/arch/crop16_9/0E80496C-1DD8-B71B-0B8B48F7F4529F52.jpg?width=465&quality=90&mode=crop/"}];
+
 app.get("/trails", function(req, res){
-       
-    res.render('trailsList', {trails:trails});
+     // pull all trails from db
+    Trail.find ({}, function(err, allTrails){
+        if(err){
+            console.log(err);
+        } else {
+            res.render('trailsList', {trails:allTrails});
+        }
+    });
 });
 
 app.post("/trails", function(req, res){
     var name = req.body.trailName;
     var image = req.body.trailImage;
     var newTrail = {name: name, image: image}
-    trails.push(newTrail);
-    
-    res.redirect("/trails");
-    
+    // create a new trail and save it to db
+    Trail.create(newTrail, function(err, newlyCreated){
+        if(err){
+            console.log(err);
+        } else{
+            // redirect to trails list
+             res.redirect("/trails");
+        }
+    });
 });
 
 //form to add a new trail
