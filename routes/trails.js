@@ -10,7 +10,25 @@ function isLoggedIn(req, res, next){
     res.redirect("/login");
 }
 
+// check trail authorization
 
+function checkTrailOwnership(req, res, next){
+    if(req.isAuthenticated()){
+        Trail.findById(req.params.id, function(err, foundTrail){
+            if(err){
+                res.redirect("back");
+            } else{
+             //does user own the trail post
+             if(foundTrail.author.id.equals(req.user._id)){
+                next();
+            } else
+                res.redirect("back");
+            }
+        });
+    } else {
+        res.redirect("back");
+    }
+}
 
 router.get("/", function(req, res){
      // pull all trails from db
@@ -51,13 +69,9 @@ router.get("/new",isLoggedIn, function(req, res){
 });
 
 //pull trail id and render edit trail page
-router.get("/:id/edit", isLoggedIn, function(req, res){
+router.get("/:id/edit", checkTrailOwnership, function(req, res){
     Trail.findById(req.params.id, function(err, foundTrail){
-        if(err){
-            res.redirect("/trails");
-        } else{
-            res.render("./trails/edit.ejs", {trail: foundTrail});
-        }
+        res.render("./trails/edit.ejs", {trail: foundTrail});
     });
 });
 
@@ -73,7 +87,7 @@ router.put("/:id", function(req, res){
 });
 
 //delete the trail route
-router.delete("/:id", function(req, res){
+router.delete("/:id", checkTrailOwnership, function(req, res){
     Trail.findByIdAndRemove(req.params.id, req.body.trail, function(err){
         if(err){
             console.log(err);
