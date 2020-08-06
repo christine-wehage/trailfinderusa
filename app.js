@@ -4,6 +4,10 @@ var app = express();
 var bodyParser = require("body-parser");
 var methodOverride = require("method-override");
 var expressSanitizer = require('express-sanitizer');
+var passport = require("passport");
+var localStrategy = require("passport-local");
+var passportLocalMongoose = require("passport-local-mongoose");
+var User = require("./models/user.js");
 
 // open db
 var mongoose = require("mongoose");
@@ -11,16 +15,27 @@ var mongoose = require("mongoose");
     
 var Trail = require("./models/trail.js");
 var Comment = require("./models/comment.js");
-var seedDB = require("./seeds.js");
-    seedDB();
+
 var request = require("request");
+
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
 app.use(expressSanitizer());
+app.use(require("express-session")({
+    secret: "There is a hint of truth in every lie",
+    resave: false,
+    saveUninitialized: false 
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
+
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //GET ROUTES
 
@@ -39,7 +54,7 @@ app.get("/trails", function(req, res){
     });
 });
 
-//CREATE ROUTE
+//create new trail route
 app.post("/trails", function(req, res){
     var name = req.body.trailName;
     var image = req.body.trailImage;
@@ -55,12 +70,58 @@ app.post("/trails", function(req, res){
     });
 });
 
+//sign up form
+app.get("/register", function(req, res) {
+    res.render("register.ejs");
+});
+
+// handle superuser registration
+app.post("/register", function(req, res) {
+    req.body.username
+    req.body.password
+    User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+        if(err){
+            console.log(err);
+            return res.render("register");
+        }
+            passport.authenticate("local")(req, res, function(){
+             res.render("home.ejs");
+            });
+    });
+});
+
+// login form for superusers and admins
+app.get("/login", function(req, res){
+    res.render("login");
+});
+
+// login authentication for superusers and admins
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/trails",
+    failureRedirect: "/login"
+    }), function(req, res){
+});
+
+// logout route
+app.get("/logout", function(req, res){
+    req.logout();
+    res.redirect("/trails");
+});
+
+// middleware check for login
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()){
+        return next();
+    } 
+    res.redirect("/login");
+}
+
 //form to add a new trail
-app.get("/trails/new", function(req, res){
+app.get("/trails/new",isLoggedIn, function(req, res){
     res.render("trails/new.ejs");
 });
 
-//pull id trail and render edit page
+//pull trail id and render edit trail page
 app.get("/trails/:id/edit", function(req, res){
     Trail.findById(req.params.id, function(err, foundTrail){
         if(err){
@@ -71,7 +132,7 @@ app.get("/trails/:id/edit", function(req, res){
     });
 });
 
-//update trail route
+//edit trail route
 app.put("/trails/:id", function(req, res){
     Trail.findByIdAndUpdate(req.params.id, req.body.trail, function(err, updatedTrail){
         if(err){
@@ -141,7 +202,9 @@ app.post("/trails/:id/comments", function(req, res){
     
     
     
-})
+});
+
+
 
 app.get("*", function(req, res){
     res.send('404 file not found');
