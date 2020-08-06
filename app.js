@@ -9,6 +9,10 @@ var localStrategy = require("passport-local");
 var passportLocalMongoose = require("passport-local-mongoose");
 var User = require("./models/user.js");
 
+var commentsRoutes = require("./routes/comments");
+var trailsRoutes = require("./routes/trails");
+var indexRoutes = require("./routes/index");
+
 // open db
 var mongoose = require("mongoose");
     mongoose.connect("mongodb://localhost/trails");
@@ -37,178 +41,9 @@ passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-//GET ROUTES
-
-app.get("/", function(req, res){
-    res.render('home.ejs');
-});
-
-app.get("/trails", function(req, res){
-     // pull all trails from db
-    Trail.find ({}, function(err, allTrails){
-        if(err){
-            console.log(err);
-        } else {
-            res.render('trails/index.ejs', {trails:allTrails});
-        }
-    });
-});
-
-//create new trail route
-app.post("/trails", function(req, res){
-    var name = req.body.trailName;
-    var image = req.body.trailImage;
-    var newTrail = {name: name, image: image};
-    // create a new trail, sanitize, and save it to db
-    Trail.create(newTrail, function(err, newlyCreated){
-        if(err){
-            console.log(err);
-        } else{
-            // redirect to trails list
-             res.redirect("/trails");
-        }
-    });
-});
-
-//sign up form
-app.get("/register", function(req, res) {
-    res.render("register.ejs");
-});
-
-// handle superuser registration
-app.post("/register", function(req, res) {
-    req.body.username
-    req.body.password
-    User.register(new User({username: req.body.username}), req.body.password, function(err, user){
-        if(err){
-            console.log(err);
-            return res.render("register");
-        }
-            passport.authenticate("local")(req, res, function(){
-             res.render("home.ejs");
-            });
-    });
-});
-
-// login form for superusers and admins
-app.get("/login", function(req, res){
-    res.render("login");
-});
-
-// login authentication for superusers and admins
-app.post("/login", passport.authenticate("local", {
-    successRedirect: "/trails",
-    failureRedirect: "/login"
-    }), function(req, res){
-});
-
-// logout route
-app.get("/logout", function(req, res){
-    req.logout();
-    res.redirect("/trails");
-});
-
-// middleware check for login
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    } 
-    res.redirect("/login");
-}
-
-//form to add a new trail
-app.get("/trails/new",isLoggedIn, function(req, res){
-    res.render("trails/new.ejs");
-});
-
-//pull trail id and render edit trail page
-app.get("/trails/:id/edit", function(req, res){
-    Trail.findById(req.params.id, function(err, foundTrail){
-        if(err){
-            res.redirect("/trails");
-        } else{
-            res.render("./trails/edit.ejs", {trail: foundTrail});
-        }
-    });
-});
-
-//edit trail route
-app.put("/trails/:id", function(req, res){
-    Trail.findByIdAndUpdate(req.params.id, req.body.trail, function(err, updatedTrail){
-        if(err){
-            res.redirect("/trails");
-        } else {
-            res.redirect("/trails/" + req.params.id);
-        }
-    });
-});
-
-//delete the trail route
-app.delete("/trails/:id", function(req, res){
-    Trail.findByIdAndRemove(req.params.id, req.body.trail, function(err){
-        if(err){
-            console.log(err);
-            res.redirect("/trails");
-        } else {
-            res.redirect("/trails/");
-        }
-    });
-});
-
-//pull id trail and render show page
-app.get("/trails/:id", function(req, res){
-    Trail.findById(req.params.id).populate("comments").exec(function(err, foundTrail){
-        if(err){
-            console.log(err);
-        } else{
-            res.render("trails/show.ejs", {trail: foundTrail});
-        }
-    });
-});
-
-//Comments route
-app.get("/trails/:id/comments/new", function(req, res){
-    Trail.findById(req.params.id, function(err, trail){
-        if(err){
-            console.log(err);
-        } else{
-            res.render("comments/new", {trail: trail});
-        }
-    });
- 
-});
-
-app.post("/trails/:id/comments", function(req, res){
-    //lookup trail by id
-    Trail.findById(req.params.id, function(err, trail){
-        if(err){
-            console.log(err);
-            res.redirect("/trails");
-        } else {
-            //create the new comment
-            Comment.create(req.body.comment, function(err, comment){
-                if(err){
-                    console.log(err);
-                } else {
-                   //associate comment to trail
-                   trail.comments.push(comment);
-                   trail.save();
-                   //redirect to trail show details
-                   res.redirect("/trails/" + trail._id);
-                }
-            });
-        }
-    });
-    
-    
-    
-});
-
-
-
-app.get("*", function(req, res){
-    res.send('404 file not found');
-});
+app.use("/trails/:id/comments", commentsRoutes);
+app.use("/trails", trailsRoutes);
+app.use(indexRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("Trailfinder server has started");

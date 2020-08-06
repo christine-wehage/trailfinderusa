@@ -7,12 +7,7 @@
 <a href="/trails">Go back</a>
 <form class="ui fluid form" action="/trails/<%= trail._id %>/comments" method="POST">
     
-    <div class="field">
-        <input type="text" name="comment[author]" placeholder="name">
-        <div class="ui pointing label">
-            Please enter a value
-        </div>
-    </div>
+
     <div class="field">
         <input type="text" name="comment[text]" placeholder="comment text">
         <div class="ui pointing label">
