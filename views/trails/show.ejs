@@ -6,11 +6,12 @@
 <p ><%= trail.name %> </p>
 <img src="<%= trail.image %>">
 
-
+<% if(currentUser && trail.author.id.equals(currentUser._id)){ %>
             <a href="/trails/<%= trail._id %>/edit"><button class="ui orange basic button">Edit</button></a>
             <form class="ui fluid form" action="/trails/<%= trail._id %>?_method=DELETE" method="POST">
                 <button class="ui red basic button">DELETE</button>
             </form>
+<% } %>
 
 
 <% trail.comments.forEach(function(comment){ %>
