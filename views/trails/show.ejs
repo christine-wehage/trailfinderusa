@@ -1,25 +1,124 @@
+
 <%- include ("../partials/header") %>
 
-<a href="/trails">Go Back</a>
-<h1>this is the show trail page</h1>
+  <div class="ui main text container">
+    <h1 class="ui header"><%= trail.name %> - ***/**</h1>
+    <h4>location at location, location, LI</h4>
+    <p><%= trail.description %></p>
+  </div>
 
-<p ><%= trail.name %> </p>
-<img src="<%= trail.image %>">
 
-<% if(currentUser && trail.author.id.equals(currentUser._id)){ %>
-            <a href="/trails/<%= trail._id %>/edit"><button class="ui orange basic button">Edit</button></a>
-            <form class="ui fluid form" action="/trails/<%= trail._id %>?_method=DELETE" method="POST">
-                <button class="ui red basic button">DELETE</button>
-            </form>
+  <div class="ui borderless main menu">
+    <div class="ui text container">
+      <div class="header item">
+       <%= trail.name %>
+      </div>
+      <a href="#ratings" class="item">Ratings</a>
+      <a href="#" class="item">Website</a>
+              <% if(currentUser && trail.author.id.equals(currentUser._id)){ %>
+            <a href="/trails/<%= trail._id %>/edit" class="item" >Edit</a>
 <% } %>
+      <a href="#" class="ui right floated dropdown item">
+        Share <i class="dropdown icon"></i>
 
+        <div class="menu">
+          <div class="item">Facebook</div>
+          <div class="item">Twitter</div>
+          <div class="item">Instagram</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="ui text container">
+
+            <div>
+                <img src="<%= trail.image %>">
+            </div>
+
+
+<table class="ui celled padded table" id="ratings">
+  <thead>
+    <tr><th class="single line">Author</th>
+    <th>In A Word</th>
+    <th>Rating</th>
+    <th>Comment</th>
+  </tr></thead>
+    <tbody>
 
 <% trail.comments.forEach(function(comment){ %>
-    <p>
-        <strong><%= comment.author.username %></strong> - <%= comment.text %>
-    </p>
+    <tr>
+      <td>
+        <h2 class="ui center aligned header"><%= comment.author.username %></h2>
+      </td>
+      <td class="single line">
+        PLACEHOLDER
+      </td>
+      <td>
+        <div class="ui star rating disabled" id="rating" data-rating="<%= comment.rating %>" data-max-rating="5"></div>
+      </td>
+      <td>
+          <%= comment.text %>
+          </td>
+    </tr>
 <% }) %>
 
-<a href="/trails/<%= trail._id %>/comments/new">Add comment</a>
+</tbody>
+  <tfoot>
+    <tr><th colspan="5">
+        <div class="ui left floated menu">
+            <a href="#" class="item" id="addCommentButton">Add comment</a>
+        </div>
+      <div class="ui right floated pagination menu">
+        <a class="icon item">
+          <i class="left chevron icon"></i>
+        </a>
+        <a class="item">1</a>
+        <a class="item">2</a>
+        <a class="item">3</a>
+
+        <a class="icon item">
+          <i class="right chevron icon"></i>
+        </a>
+      </div>
+    </th>
+  </tr></tfoot>
+</table>
+
+  </div>
+
+<!--new comment modal-->
+<%- include ("../comments/new.ejs") %>
+  
+
+<script type="text/javascript">
+
+// display star ratings disabled on show page
+$(document).ready(function(){$(".rating").rating('disable');});
+
+// enable star rating function on new comment modal
+$('#addCommentButton').click(function(){$(".rating").rating('enable');});
+
+// show add comment modal when user clicks the add comment button
+$('#addCommentButton').click(function () {
+    $('#addCommentModal').modal('show');
+  });
+  
+//   $('#starRating').click(function(){
+//     $('.ui.rating').rating({
+//       initialRating: 0,
+//       maxRating: 3,
+//       clearable: true,
+//       onRate: function(value) {
+//         console.log('value set to:' + value);
+//       },
+      
+//     });
+// });
+
+
+</script>
+
+
 
 <%- include ("../partials/footer") %>

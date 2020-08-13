@@ -1,23 +1,46 @@
 
-
-<%- include ("../partials/header") %>
-
-
-<h1>Add a New Comment to  <%= trail.name %> </h1>
-<a href="/trails">Go back</a>
-<form class="ui fluid form" action="/trails/<%= trail._id %>/comments" method="POST">
-    
-
+<div class="ui modal" id="addCommentModal">
+  <i class="close icon"></i>
+  <div class="header">
+    Add a New Rating to  <strong><%= trail.name %> </strong>
+  </div>
+<form id="newCommentForm" class="ui fluid form" action="/trails/<%= trail._id %>/comments" method="POST">
     <div class="field">
-        <input type="text" name="comment[text]" placeholder="comment text">
-        <div class="ui pointing label">
-            Please enter a value
-        </div>
+        <input type="text" name="comment[title]" placeholder="In One Word">
+        <!--<div class="ui pointing label">-->
+        <!--    Please enter a value-->
+        <!--</div>-->
     </div>
-    
-    <button>Submit</button>
+    <div class="field">
+        <textarea cols="30" rows="5" name="comment[text]" placeholder="Type your comment here!"></textarea>
+     </div>
+    <div class="field">
+         <div class="ui star rating" id="rating" data-max-rating="5"></div>
+         <input id="commentRating" name="comment[rating]" value="" type="hidden">
+    </div>
 </form>
+ <div class="actions">
+    <div class="ui deny button">Cancel</div>
+   <input type="submit" value="submit" form="newCommentForm" class="ui button">
+  </div>
+ </div>
+ <script src="https://oss.maxcdn.com/semantic-ui/2.1.6/semantic.min.js"></script>
+ <script src="../semantic/dist/components/rating.min.js"></script>
+ <script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  
+<script>
+ // accept star rating and pass rating number to ratingValue
+
+  $('#newCommentForm').one("click mouseover", function(){
+    $('.ui.rating').rating({
+      onRate: function(value) {
+        var ratingValue = value;
+        $('#commentRating').val(ratingValue);
+      },
+      
+    });
+});
 
 
-
-<%- include ("../partials/footer") %>
+</script>

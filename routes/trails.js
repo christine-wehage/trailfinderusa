@@ -45,6 +45,7 @@ router.get("/", function(req, res){
 router.post("/", function(req, res){
     var name = req.body.trailName;
     var image = req.body.trailImage;
+    var description = req.body.trail.Description;
     //associate author username to newly created trail
     var author = {
         id: req.user._id,
