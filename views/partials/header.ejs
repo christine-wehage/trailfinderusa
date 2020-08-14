@@ -45,10 +45,12 @@ if(currentUser){ %>
     </div>
 <% } else { %>
     <div class="item">
-        <a href="/login" class="ui button">Login</a>
+        <a href="#" id="loginButton" class="ui button">Login</a>
+         <!--login modal-->
+        <%- include ("../loginModal.ejs") %>
     </div>
     <div class="item">
-        <a class="ui primary button">Sign Up</a>
+        <a class="ui primary button" id="registerButton">Sign Up</a>
     </div>
     
 <% }%>
@@ -56,4 +58,12 @@ if(currentUser){ %>
   </div>
 </div>
 
+<script>
+    // show login modal when user clicks the login button
+    $('#loginButton').click(function () {
+        $('#loginModal').modal('show');
+      });
+</script>
+
+  
 

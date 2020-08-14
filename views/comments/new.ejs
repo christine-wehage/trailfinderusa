@@ -6,16 +6,18 @@
   </div>
 <form id="newCommentForm" class="ui fluid form" action="/trails/<%= trail._id %>/comments" method="POST">
     <div class="field">
+        <label>Rating Title</label>
         <input type="text" name="comment[title]" placeholder="In One Word">
         <!--<div class="ui pointing label">-->
         <!--    Please enter a value-->
         <!--</div>-->
     </div>
     <div class="field">
+        <label>Rating Comment</label>
         <textarea cols="30" rows="5" name="comment[text]" placeholder="Type your comment here!"></textarea>
      </div>
     <div class="field">
-         <div class="ui star rating" id="rating" data-max-rating="5"></div>
+         <div class="ui star huge rating" id="rating" data-max-rating="5"></div>
          <input id="commentRating" name="comment[rating]" value="" type="hidden">
     </div>
 </form>

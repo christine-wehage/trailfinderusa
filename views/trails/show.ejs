@@ -52,7 +52,7 @@
         <h2 class="ui center aligned header"><%= comment.author.username %></h2>
       </td>
       <td class="single line">
-        PLACEHOLDER
+        <%= comment.title %>
       </td>
       <td>
         <div class="ui star rating disabled" id="rating" data-rating="<%= comment.rating %>" data-max-rating="5"></div>
@@ -67,8 +67,13 @@
   <tfoot>
     <tr><th colspan="5">
         <div class="ui left floated menu">
-            <a href="#" class="item" id="addCommentButton">Add comment</a>
+         <% if (currentUser){ %>
+            <a class="item" id="addCommentButton">Add comment</a>
+            <% } else{ %>
+            <a class="item" id="commentLoginButton">Add comment</a>
+            <% } %>
         </div>
+        
       <div class="ui right floated pagination menu">
         <a class="icon item">
           <i class="left chevron icon"></i>
@@ -99,24 +104,18 @@ $(document).ready(function(){$(".rating").rating('disable');});
 // enable star rating function on new comment modal
 $('#addCommentButton').click(function(){$(".rating").rating('enable');});
 
-// show add comment modal when user clicks the add comment button
+
+// show comment modal
 $('#addCommentButton').click(function () {
-    $('#addCommentModal').modal('show');
+        $('#addCommentModal').modal('show');
+      });
+
+// show login modal
+ $('#commentLoginButton').click(function () {
+    $('#loginModal').modal('show');
   });
-  
-//   $('#starRating').click(function(){
-//     $('.ui.rating').rating({
-//       initialRating: 0,
-//       maxRating: 3,
-//       clearable: true,
-//       onRate: function(value) {
-//         console.log('value set to:' + value);
-//       },
       
-//     });
-// });
-
-
+      
 </script>
 
 

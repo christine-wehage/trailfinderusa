@@ -50,6 +50,8 @@ app.use("/trails/:id/comments", commentsRoutes);
 app.use("/trails", trailsRoutes);
 app.use(indexRoutes);
 
+
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("Trailfinder server has started");
 });
+

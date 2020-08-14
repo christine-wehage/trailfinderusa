@@ -20,3 +20,5 @@ var trailSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Trail", trailSchema);
+
+
