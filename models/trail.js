@@ -16,8 +16,7 @@ var trailSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Comment"
         }
-        ],
-    //
+     ],
     rating: {
         type: Number,
         default: 0

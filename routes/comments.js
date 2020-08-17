@@ -47,11 +47,10 @@ router.post("/", isLoggedIn, function(req, res){
                     comment.save();
                    //associate comment to trail
                    trail.comments.push(comment);
-                //   trail.rating = calculateAverage(trail.rating);
+                   trail.rating = calculateAverage(trail.comments);
                    // save trail
                     trail.save();
                    //redirect to trail show details
-                   console.log("success", "Your rating has been successfully added.");
                    res.redirect("/trails/" + trail._id);
 
             });
@@ -59,14 +58,25 @@ router.post("/", isLoggedIn, function(req, res){
     });
 });
 
-// NEED TO FIX this func
-// function calculateAverage(comments) {
-//     if (comments.length === 0) {
-//         return 0;
-//     }
-//     for(var sum = 0, len = comments.length; sum < len; sum++){
-//         sum += comments.rating;
-//     }
-// }
+
+function calculateAverage(comments) {
+// grab all comments from db and initialize variables
+    let ratingSum = 0;
+    let ratingsFound = 0;
+    const len = comments.length;
+    let ratingElement = null;
+// pull ratings out of comments and add all rating values together
+    for(let i = 0; i < len; i++) {
+        ratingElement = comments[i];
+        if (ratingElement.rating) {
+        ratingSum = ratingElement.rating + ratingSum;
+        ratingsFound = ratingsFound + 1;
+        }
+    }
+// divide by the amount of valid integer ratings
+    const averageRating = ratingSum / ratingsFound;
+// return average rating rounded to nearest whole integer
+    return Math.round(averageRating);
+}
 
 module.exports = router;
