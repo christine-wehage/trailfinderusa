@@ -3,6 +3,7 @@ var router = express.Router({mergeParams: true});
 var Trail = require("../models/trail.js");
 var Comment = require("../models/comment.js");
 
+
 // middleware check for login
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
