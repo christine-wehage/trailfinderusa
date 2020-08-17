@@ -24,33 +24,49 @@ router.get("/new", function(req, res){
 
 router.post("/", isLoggedIn, function(req, res){
     //lookup trail by id
-    Trail.findById(req.params.id, function(err, trail){
+    Trail.findById(req.params.id).populate("comments").exec(function(err, trail){
         if(err){
             console.log(err);
-            res.redirect("/trails");
-        } else {
+            return res.redirect("back");
+        } 
             //create the new comment
             Comment.create(req.body.comment, function(err, comment){
                 if(err){
                     console.log(err);
-                } else {
+                } 
+                Comment.create(req.body.comment, function(err, comment){
+                    if(err) {
+                        console.log("error", err.message);
+                        return res.redirect("back");
+                    }
                     // add username and id to the comment
                     comment.author.id = req.user._id;
                     comment.author.username = req.user.username;
+                    comment.trail = trail;
                     //save the comment
                     comment.save();
                    //associate comment to trail
                    trail.comments.push(comment);
-                   trail.save();
+                //   trail.rating = calculateAverage(trail.rating);
+                   // save trail
+                    trail.save();
                    //redirect to trail show details
+                   console.log("success", "Your rating has been successfully added.");
                    res.redirect("/trails/" + trail._id);
-                }
+
             });
-        }
+        });
     });
-    
-    
-    
 });
+
+// NEED TO FIX this func
+// function calculateAverage(comments) {
+//     if (comments.length === 0) {
+//         return 0;
+//     }
+//     for(var sum = 0, len = comments.length; sum < len; sum++){
+//         sum += comments.rating;
+//     }
+// }
 
 module.exports = router;

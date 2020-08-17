@@ -43,20 +43,17 @@ router.get("/", function(req, res){
 
 //create new trail route
 router.post("/", function(req, res){
-    var name = req.body.trailName;
-    var image = req.body.trailImage;
-    var description = req.body.trail.Description;
-    //associate author username to newly created trail
+
+    // create a new trail, sanitize, and save it to db
+    Trail.create(req.body.trail, function(err, trail){
+        if(err){
+            console.log(err);
+        } else{
+     //associate author username to newly created trail
     var author = {
         id: req.user._id,
         username: req.user.username
     }
-    // create a new trail, sanitize, and save it to db
-     var newTrail = {name: name, image: image, author: author};
-    Trail.create(newTrail, function(err, newlyCreated){
-        if(err){
-            console.log(err);
-        } else{
             // redirect to trails list
              res.redirect("/trails");
         }

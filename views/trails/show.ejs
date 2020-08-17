@@ -2,7 +2,7 @@
 <%- include ("../partials/header") %>
 
   <div class="ui main text container">
-    <h1 class="ui header"><%= trail.name %> - ***/**</h1>
+    <h1 class="ui header"><%= trail.name %> - ***/**. <%= trail.rating %></h1>
     <h4>location at location, location, LI</h4>
     <p><%= trail.description %></p>
   </div>
@@ -35,6 +35,8 @@
             <div>
                 <img src="<%= trail.image %>">
             </div>
+            
+            <%- include ("../partials/slideshow.ejs") %>
 
 
 <table class="ui celled padded table" id="ratings">
