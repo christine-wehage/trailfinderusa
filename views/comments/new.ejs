@@ -1,6 +1,6 @@
 
 <div class="ui modal" id="addCommentModal">
-  <i class="close icon"></i>
+  <i class="close cancel icon"></i>
   <div class="header">
     Add a New Rating to  <strong><%= trail.name %> </strong>
   </div>
@@ -22,7 +22,7 @@
     </div>
 </form>
  <div class="actions">
-    <div class="ui deny button">Cancel</div>
+    <div class="ui deny button cancel">Cancel</div>
    <input type="submit" value="submit" form="newCommentForm" class="ui button">
   </div>
  </div>
@@ -44,5 +44,7 @@
     });
 });
 
+// disable star rating function if user clicks out of modal without submitting
+$('.cancel').click(function(){$(".rating").rating('disable');});
 
 </script>
