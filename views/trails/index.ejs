@@ -1,62 +1,53 @@
-<%- include ("../partials/header") %>
 
-<!--<h1>HI PEEPS LETS SEE THE TRAILS!</h1>-->
-
-
-
-
-
-
-  <div class="ui main text container">
-    <h1 class="ui header">Sticky Example</h1>
-    <p>This example shows how to use lazy loaded images, a sticky menu, and a simple text container</p>
-  </div>
-
-
-  <div class="ui borderless main menu">
-    <div class="ui text container">
-      <div class="header item">
-        <img class="logo" src="assets/images/logo.png">
-        Project Name
-      </div>
-      <a href="#" class="item">Blog</a>
-      <a href="#" class="item">Articles</a>
-      <a href="#" class="ui right floated dropdown item">
-        Dropdown <i class="dropdown icon"></i>
-        <div class="menu">
-          <div class="item">Link Item</div>
-          <div class="item">Link Item</div>
-          <div class="divider"></div>
-          <div class="header">Header Item</div>
-          <div class="item">
-            <i class="dropdown icon"></i>
-            Sub Menu
-            <div class="menu">
-              <div class="item">Link Item</div>
-              <div class="item">Link Item</div>
+<div class="ui three column centered grid">
+    <div class="ui special cards">
+      <% trails.forEach(function(trail){ %>
+      <div class="card">
+        <div class="blurring dimmable image">
+          <div class="ui dimmer">
+            <div class="content">
+              <div class="center">
+                <a href="/trails/<%= trail._id %>">
+                  <div class="ui inverted button">
+                  Details
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
-          <div class="item">Link Item</div>
+          <img src="<%= trail.image %>">
         </div>
-      </a>
+        <div class="content">
+          <div class="header">
+            <%= trail.name %>
+          </div>
+          <div class="meta">
+            <a>location-ADDIT</a>
+          </div>
+          <div class="description" id="description">
+           <% var str = trail.description;
+              if (str != null){
+                var shortDescription = str.substring(0, 100) + " ...";
+           %>
+               <p><%= shortDescription %></p>
+           <% } 
+           %>
+           
+          </div>
+        </div>
+        <div class="extra content">
+          <span class="right floated">
+            <div class="ui star rating disabled" id="rating" data-rating="<%= trail.rating %>" data-max-rating="5">
+            </div>
+          </span>
+          <span>
+            <i class="user icon"></i>
+            # of ratings here
+          </span>
+        </div>
+      </div>
+     <% }); %>
     </div>
-  </div>
-  
-<div class="ui three column centered grid"> 
-<% trails.forEach(function(trail){ %>
-  <div class="row">
-    <div class="three wide column">
-       <h4><%= trail.name %>   </h4>
-        <div class="ui star huge rating disabled" id="rating" data-rating="<%= trail.rating %>" data-max-rating="5"></div>
-    </div>
-    <div class="five wide column">
-      <img class="ui small circular image" src="<%= trail.image %>">
-    </div>
-    <div class="three wide column">
-      <p> <a href="/trails/<%= trail._id %>">More Info</a></p>
-    </div>
-  </div>
-<% }); %>
 </div>
 
 
@@ -66,7 +57,9 @@
 // display star ratings disabled
 $(document).ready(function(){$(".rating").rating('disable');});
 
+// dim card images
+$(document).ready(function(){$('.special.cards .image').dimmer({on: 'hover'});});
+
 </script>
 
 
-<%- include ("../partials/footer") %>

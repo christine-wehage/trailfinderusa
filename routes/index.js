@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var passport = require("passport");
 var User = require("../models/user");
+var Trail = require("../models/trail.js")
 
 
 
@@ -53,7 +54,15 @@ function isLoggedIn(req, res, next){
 
 // home page
 router.get("/", function(req, res){
-    res.render('home.ejs');
+    // pull all trails from db
+    Trail.find ({}, function(err, allTrails){
+        if(err){
+            console.log(err);
+        } else {
+             res.render('home.ejs', {trails:allTrails});
+        }
+    });
+   
 });
 
 // error page
